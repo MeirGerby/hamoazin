@@ -8,7 +8,7 @@ class Manager:
         self.producer = None
 
     async def setup(self):
-        pass 
+        self.producer = Producer()
 
         
 
