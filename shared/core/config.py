@@ -6,6 +6,11 @@ class Settings(BaseSettings):
     METADATA_TOPIC: str = "metadata_topic"
     # DATA 
     DATA_VOLUME: str = r"C:\Users\MEIRG\Downloads\podcasts_extracted\podcasts"
+
+    # elasticsearch 
+    ELASTIC_URL: str = "http://localhost:9200" 
+    ELASTIC_INDEX_NAME: str = '' 
+    
     
 
 
