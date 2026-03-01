@@ -1,5 +1,6 @@
 import os 
-import asyncio 
+import asyncio
+from uuid import uuid4 
 
 from shared.core.config import settings
 from shared.kafka.producer import ProducerMessages  
@@ -22,6 +23,7 @@ class Manager:
                 absulut_path = self.folder + '\\' + i 
                 self.handle_file = FileMetadata(absulut_path)
                 file_metadata = self.handle_file.add_metadata()
+                file_metadata['id'] = str(uuid4())
                 await self.producer.send_messege(file_metadata)
                 print(f"the message send successfully,\n file's metadata: {file_metadata} \n topic: {self.metadata_topic}")
         except FileNotFoundError as f:
