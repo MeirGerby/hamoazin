@@ -13,6 +13,7 @@ class ConsumerMessages:
         self.topics = topics 
     
     async def consumer_loop(self, callback):
+        """listening to kafka by topics"""
         self.consumer.subscribe(self.topics)
         try:
             while True:
