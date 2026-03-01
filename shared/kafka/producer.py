@@ -1,7 +1,7 @@
 from confluent_kafka import Producer 
 import json 
 
-class ProducerMesseges:
+class ProducerMessages:
     def __init__(self, bootstrap_servers: str, topic: str):
         self.conf = {"bootstrap.servers": bootstrap_servers}
         self.producer = Producer(self.conf)  # type: ignore
