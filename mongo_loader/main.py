@@ -1,0 +1,52 @@
+import asyncio
+
+from shared.kafka.consumer import ConsumerMessages 
+from shared.core.config import settings 
+from .gridfs import MongoLoader 
+
+class Manager:
+    def __init__(self):
+        self.mongo_url = settings.MONGODB_URL 
+        self.mongo_db = settings.MONGO_DB 
+        
+        self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
+        self.metadata_topic = [settings.METADATA_TOPIC]
+        self.group_id = settings.KAFKA_GROUP_ID 
+
+        self.mongo_loader = None
+        self.consumer = None 
+
+
+    async def setup(self):
+        """setup the consumer for gettings the messages""" 
+        self.consumer = ConsumerMessages(
+            bootstrap_servers=self.bootstrap_servers,
+            group_id=self.group_id,
+            topics=self.metadata_topic
+        )
+
+    async def manage_file(self, file_dict: dict):
+        try:
+            self.mongo_loader = MongoLoader(
+                db=self.mongo_db, 
+                file_path=file_dict.get('path', ''), 
+                filename=file_dict.get('filename', '')
+                )
+            self.mongo_loader.send_file()
+
+        except Exception as e:
+            print(e)
+
+
+    async def run(self):
+        await self.setup()
+        print("the program set up seccessfully")
+
+        await self.consumer.consumer_loop(self.manage_file)  # type: ignore
+        
+    async def main(self):
+        await self.run() 
+
+if __name__ == "__main__":
+    manager = Manager()
+    asyncio.run(manager.main())
