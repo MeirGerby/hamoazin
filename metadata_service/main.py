@@ -17,16 +17,17 @@ class Manager:
         self.producer = ProducerMessages(self.bootstrap_servers, self.metadata_topic) 
 
     async def run(self):
-        for i in os.listdir(self.folder):
-            try:
+        try:
+            for i in os.listdir(self.folder):
                 absulut_path = self.folder + '\\' + i 
                 self.handle_file = FileMetadata(absulut_path)
                 file_metadata = self.handle_file.add_metadata()
                 await self.producer.send_messege(file_metadata)
-            except FileNotFoundError as f:
-                print(f)
-            finally:
-                self.producer.close()
+                print(f"the message send successfully,\n file's metadata: {file_metadata} \n topic: {self.metadata_topic}")
+        except FileNotFoundError as f:
+            print(f)
+        finally:
+            self.producer.close()
         
     async def main(self):
         self.setup()

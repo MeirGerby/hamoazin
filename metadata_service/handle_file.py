@@ -21,9 +21,9 @@ class FileMetadata:
             "date_modified": str(date_modified) 
             }
 
-FILE = r"C:\Users\MEIRG\Downloads\podcasts_extracted\podcasts\download (2).wav"
-file_manager = FileMetadata(FILE)
-print(file_manager.add_metadata())
+# FILE = r"C:\Users\MEIRG\Downloads\podcasts_extracted\podcasts\download (2).wav"
+# file_manager = FileMetadata(FILE)
+# print(file_manager.add_metadata())
     
 
     
