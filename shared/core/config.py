@@ -6,3 +6,7 @@ class Settings(BaseSettings):
 
     # DATA 
     DATA_VOLUME: str = r"C:\Users\MEIRG\Downloads\podcasts\podcasts"
+
+
+
+settings = Settings()
