@@ -4,7 +4,8 @@ class Settings(BaseSettings):
     # kafka configuration 
     BOOTSTRAP_SERVERS: str = "localhost:9092"
     METADATA_TOPIC: str = "metadata_topic"
-    KAFKA_GROUP_ID: str = "metadata_consumer_group"
+    METADATA_GROUP_ID: str = "metadata_consumer_group"
+    PROCESSING_GROUP_ID: str = "infomation_processing"
 
     # DATA 
     DATA_VOLUME: str = "/data/podcasts"

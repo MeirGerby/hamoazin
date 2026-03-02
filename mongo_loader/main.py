@@ -12,7 +12,7 @@ class Manager:
         
         self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
         self.metadata_topic = [settings.METADATA_TOPIC]
-        self.group_id = settings.KAFKA_GROUP_ID 
+        self.group_id = settings.PROCESSING_GROUP_ID 
 
         self.mongo_loader = None
         self.consumer = None 
@@ -30,6 +30,7 @@ class Manager:
 
     async def manage_file(self, file_dict: dict):
         try:
+            print(file_dict)
             self.mongo_loader = MongoLoader(
                 db=self.db, 
                 file_path=file_dict.get('path', ''), 

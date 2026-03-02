@@ -40,6 +40,11 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false 
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m" 
+
+      - ELASTIC_URL=http://elasticsearch:9200 
+      - BOOTSTRAP_SERVERS=kafka:9092        
+      - MONGODB_URL=mongodb://mongodb:27017/
+
     ports:
       - "9200:9200"
     volumes:
@@ -57,7 +62,7 @@ services:
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
     volumes:
-      - ./data/podcasts:/data/podcasts
+      - C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts:/data/podcasts
   information-processing:
     build: 
       context: .
@@ -82,7 +87,9 @@ services:
       - "8002:8000" 
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
-      - MONGODB_URL=mongodb://mongodb:27017
+      - MONGODB_URL=mongodb://mongodb:27017 
+    volumes:
+      - C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts:/data/podcasts
 
 volumes:
   kafka-kraft:

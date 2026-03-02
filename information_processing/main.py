@@ -8,7 +8,7 @@ class Manager:
     def __init__(self):
         self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
         self.topics = [settings.METADATA_TOPIC]
-        self.group_id = settings.KAFKA_GROUP_ID 
+        self.group_id = settings.PROCESSING_GROUP_ID 
 
         self.index_name = settings.ELASTIC_INDEX_NAME 
         self.elastic_url = settings.ELASTIC_URL
@@ -25,7 +25,7 @@ class Manager:
         )
         
     
-    async def manage_index(self, metadata_dict: str):
+    async def manage_index(self, metadata_dict):
         self.elastic_con = ElasticSearch(
             index_name=self.index_name, 
             file_metadata=metadata_dict, 

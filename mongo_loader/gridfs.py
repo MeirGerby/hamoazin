@@ -10,7 +10,7 @@ class MongoLoader:
         """send file to mongodb by id"""
         bucket = GridFSBucket(self.db)
         with open(self.file_path, 'rb') as file_data:
-            file_id = bucket.upload_from_stream_with_id(
+            bucket.upload_from_stream_with_id(
                 file_id=file_id,
                 filename=self.filename, 
                 source=file_data

@@ -2,10 +2,10 @@ from elasticsearch import Elasticsearch
 import json 
 
 class ElasticSearch:
-    def __init__(self, index_name, file_metadata: str, hosts):
+    def __init__(self, index_name, file_metadata: dict, hosts: str):
         self.index_name = index_name 
-        self.metadata: dict = json.loads(file_metadata)
-        self.elastic: Elasticsearch = Elasticsearch(hosts=hosts)
+        self.metadata: dict = file_metadata
+        self.elastic = Elasticsearch(hosts=[hosts], verify_certs=False)
 
     def create_index(self, ):
         id = self.metadata.get('id', '')
