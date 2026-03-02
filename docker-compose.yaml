@@ -37,7 +37,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
     container_name: elasticsearch 
     environment:
-      - discorery.type=single-node
+      - discovery.type=single-node
       - xpack.security.enabled=false 
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m" 
     ports:
@@ -66,7 +66,7 @@ services:
     depends_on: [elasticsearch, kafka]
     container_name: information_processing 
     ports:
-      - "8000:8000" 
+      - "8001:8000" 
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
       - ELASTIC_URL=elasticsearch
@@ -79,7 +79,7 @@ services:
     depends_on: [mongodb, kafka]
     container_name: mongo_loader 
     ports:
-      - "8000:8000" 
+      - "8002:8000" 
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
       - MONGODB_URL=mongodb://mongodb:27017

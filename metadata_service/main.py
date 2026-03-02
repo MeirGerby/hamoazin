@@ -20,7 +20,7 @@ class Manager:
     async def run(self):
         try:
             for i in os.listdir(self.folder):
-                absulut_path = self.folder + '\\' + i 
+                absulut_path = os.path.join(self.folder, i)
 
                 self.handle_file = FileMetadata(absulut_path)
                 file_metadata = self.handle_file.add_metadata()

@@ -7,7 +7,7 @@ class ConsumerMessages:
         self.conf = {
             "bootstrap.servers": bootstrap_servers,
             "group.id": group_id,
-            "auto.reset.offset": "earlyest"
+            "auto.offset.reset": "earliest"
             }
         self.consumer = Consumer(self.conf)  # type: ignore
         self.topics = topics 

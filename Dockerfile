@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 FROM base AS metadata-service
 COPY ./shared ./shared/
-COPY metadata_service/ ./metadata-service
+COPY metadata_service/ ./metadata_service
 CMD ["python", "-m", "metadata_service.main" ]
 
 FROM base AS mongo-loader
