@@ -18,6 +18,7 @@ class Manager:
        
 
     async def setup(self):
+        print(f"DEBUG HOST: |{settings.ELASTIC_URL}|")
         self.consumer = ConsumerMessages(
             bootstrap_servers=self.bootstrap_servers,
             group_id=self.group_id,
@@ -31,7 +32,7 @@ class Manager:
     
     async def manage_index(self, metadata_dict):
         """manage the ealsticsearch to add an index with document by id"""
-        
+
         self.elastic_con.create_index(metadata_dict)
 
     async def run(self):
