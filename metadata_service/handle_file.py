@@ -10,8 +10,12 @@ class FileMetadata:
         name = self.path.name 
         stat = self.path.stat()
         size = stat.st_size 
-        date_created = datetime.fromtimestamp(stat.st_birthtime * 1e-3) 
-        date_modified = datetime.fromtimestamp(stat.st_mtime * 1e-3)
+        try:
+            birth_time = stat.st_birthtime 
+        except AttributeError:
+            birth_time = stat.st_mtime 
+        date_created = datetime.fromtimestamp(birth_time) 
+        date_modified = datetime.fromtimestamp(stat.st_mtime)
         
         
         return {
