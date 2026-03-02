@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     PROCESSING_GROUP_ID: str = "infomation_processing"
 
     # DATA 
-    DATA_VOLUME: str = "/data/podcasts"
+    DATA_VOLUME: str = "C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts"
 
     # MONGODB 
     MONGODB_URL: str = "mongodb://localhost:27017/" 

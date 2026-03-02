@@ -28,7 +28,7 @@ class ConsumerMessages:
                     continue 
                 try:
                     row_data = msg.value().decode('utf-8')  # type: ignore 
-                    data = json.loads(row_data)  
+                    data: dict = json.loads(row_data)  
                     print(f"Message received from topic {msg.topic()}: {data.get('filename', 'unknown file')}")
 
                     await callback(data)

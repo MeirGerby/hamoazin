@@ -1,7 +1,8 @@
 import logging
 from elasticsearch import Elasticsearch
 from datetime import datetime
-from core.config import settings
+
+from shared.core.config import settings
 
 class Logger:
     _logger = None
@@ -30,7 +31,8 @@ class Logger:
                         })
                     except Exception as e:
                         print(f"ES log failed: {e}")
-                        logger.addHandler(ESHandler())
-                        logger.addHandler(logging.StreamHandler()) 
-            cls._logger = logger
-            return logger
+            logger.addHandler(ESHandler())
+            logger.addHandler(logging.StreamHandler()) 
+        cls._logger = logger
+        return logger 
+    
