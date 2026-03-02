@@ -23,16 +23,16 @@ class Manager:
             group_id=self.group_id,
             topics=self.topics
         )
+        self.elastic_con = ElasticSearch(
+            index_name=self.index_name, 
+            hosts=settings.ELASTIC_URL
+        )
         
     
     async def manage_index(self, metadata_dict):
-        self.elastic_con = ElasticSearch(
-            index_name=self.index_name, 
-            file_metadata=metadata_dict, 
-            hosts=settings.ELASTIC_URL
-        )
         """manage the ealsticsearch to add an index with document by id"""
-        self.elastic_con.create_index()
+        
+        self.elastic_con.create_index(metadata_dict)
 
     async def run(self):
         await self.setup()
