@@ -1,6 +1,8 @@
 from confluent_kafka import Consumer 
 import json
-# import logging 
+from logs.logs import Logger 
+
+logger = Logger.get_logger(__name__)
 
 class ConsumerMessages:
     def __init__(self, bootstrap_servers: str, topics: list, group_id: str):
