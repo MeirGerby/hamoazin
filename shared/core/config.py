@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     ELASTIC_INDEX_NAME: str = 'podcasts' 
     ELASTIC_INDEX_LOGS: str = "index_logs"
     
+    # logs 
+    LOGGER_NAME: str = "app.log"
 
 
 settings = Settings()

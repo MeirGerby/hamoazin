@@ -1,14 +1,15 @@
 import logging
 from elasticsearch import Elasticsearch
 from datetime import datetime
+from core.config import settings
 
 class Logger:
     _logger = None
     @classmethod
     def get_logger(
-        cls, name="your_logger_name", 
-        es_host="your_es_host_name",
-        index="your_index_logs_name", 
+        cls, name=settings.LOGGER_NAME, 
+        es_host=settings.ELASTIC_URL,
+        index=settings.ELASTIC_INDEX_NAME, 
         level=logging.DEBUG
     ):
         if cls._logger:
