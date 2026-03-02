@@ -2,8 +2,10 @@ import asyncio
 
 from shared.kafka.consumer import ConsumerMessages
 from shared.core.config import settings 
-from .elastic import ElasticSearch, Elasticsearch
+from .elastic import ElasticSearch
+from shared.logs.logs import Logger 
 
+logger = Logger.get_logger()
 class Manager:
     def __init__(self):
         self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
@@ -18,7 +20,6 @@ class Manager:
        
 
     async def setup(self):
-        print(f"DEBUG HOST: |{settings.ELASTIC_URL}|")
         self.consumer = ConsumerMessages(
             bootstrap_servers=self.bootstrap_servers,
             group_id=self.group_id,
@@ -37,7 +38,7 @@ class Manager:
 
     async def run(self):
         await self.setup()
-        print("the program start ")
+        logger.info("the program start ")
 
         await self.consumer.consumer_loop(self.manage_index)
     

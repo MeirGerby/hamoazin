@@ -33,7 +33,6 @@ class Manager:
                 file_metadata['filename'] = i
 
                 await self.producer.send_messege(file_metadata)
-                # print(f"the message send successfully,\n file's metadata: {file_metadata} \n topic: {self.metadata_topic}")
 
         except FileNotFoundError as f:
             print(f)

@@ -1,5 +1,7 @@
 from elasticsearch import Elasticsearch
-import json 
+from shared.logs.logs import Logger 
+
+logger = Logger.get_logger()
 
 class ElasticSearch:
     def __init__(self, index_name, hosts: str):
@@ -9,6 +11,6 @@ class ElasticSearch:
     def create_index(self, metadata: dict):
         id = metadata.get('id', '')
         index = self.elastic.index(index=self.index_name, document=metadata, id=id) 
-        print(f"the index added successfully {str(index)} ")
+        logger.info(f"the index added successfully {str(index)} ")
         
 

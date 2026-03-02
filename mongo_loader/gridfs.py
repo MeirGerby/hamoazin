@@ -1,5 +1,7 @@
 from gridfs import GridFSBucket
+from shared.logs.logs import Logger 
 
+logger = Logger.get_logger()
 class MongoLoader:
     def __init__(self, db, file_path, filename):
         self.db = db  
@@ -9,11 +11,13 @@ class MongoLoader:
     def send_file(self, file_id):
         """send file to mongodb by id"""
         bucket = GridFSBucket(self.db)
-        with open(self.file_path, 'rb') as file_data:
-            bucket.upload_from_stream_with_id(
-                file_id=file_id,
-                filename=self.filename, 
-                source=file_data
-            )
-        print(f"file uploaded with fild_id {file_id}")
-    
+        try:
+            with open(self.file_path, 'rb') as file_data:
+                bucket.upload_from_stream_with_id(
+                    file_id=file_id,
+                    filename=self.filename, 
+                    source=file_data
+                )
+            logger.info(f"file uploaded with fild_id {file_id}")
+        except Exception as e:
+            logger.error(e)

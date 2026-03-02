@@ -4,7 +4,9 @@ from pymongo import MongoClient
 from shared.kafka.consumer import ConsumerMessages 
 from shared.core.config import settings 
 from .gridfs import MongoLoader 
+from shared.logs.logs import Logger 
 
+logger = Logger.get_logger()
 class Manager:
     def __init__(self):
         self.mongo_url = settings.MONGODB_URL 
@@ -30,7 +32,6 @@ class Manager:
 
     async def manage_file(self, file_dict: dict):
         try:
-            print(file_dict)
             self.mongo_loader = MongoLoader(
                 db=self.db, 
                 file_path=file_dict.get('path', ''), 
@@ -41,12 +42,12 @@ class Manager:
             self.mongo_loader.send_file(id)
 
         except Exception as e:
-            print(e)
+            logger.error(e)
 
 
     async def run(self):
         await self.setup()
-        print("the program set up seccessfully")
+        logger.info("the program set up seccessfully")
 
         await self.consumer.consumer_loop(self.manage_file)  # type: ignore
         
