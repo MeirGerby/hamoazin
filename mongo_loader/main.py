@@ -12,7 +12,7 @@ class Manager:
         
         self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
         self.metadata_topic = [settings.METADATA_TOPIC]
-        self.group_id = settings.PROCESSING_GROUP_ID 
+        self.group_id = settings.METADATA_GROUP_ID 
 
         self.mongo_loader = None
         self.consumer = None 
