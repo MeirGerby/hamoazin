@@ -36,6 +36,7 @@ class Manager:
                 filename=file_dict.get('filename', '')
                 )
             id = file_dict.get('id', '')
+
             self.mongo_loader.send_file(id)
 
         except Exception as e:
