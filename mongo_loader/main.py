@@ -1,4 +1,5 @@
 import asyncio
+from pymongo import MongoClient
 
 from shared.kafka.consumer import ConsumerMessages 
 from shared.core.config import settings 
@@ -7,7 +8,7 @@ from .gridfs import MongoLoader
 class Manager:
     def __init__(self):
         self.mongo_url = settings.MONGODB_URL 
-        self.mongo_db = settings.MONGO_DB 
+        self.mongo_db_name = settings.MONGO_DB 
         
         self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
         self.metadata_topic = [settings.METADATA_TOPIC]
@@ -24,11 +25,13 @@ class Manager:
             group_id=self.group_id,
             topics=self.metadata_topic
         )
+        self.mongo_client = MongoClient(self.mongo_url)
+        self.db = self.mongo_client[self.mongo_db_name]
 
     async def manage_file(self, file_dict: dict):
         try:
             self.mongo_loader = MongoLoader(
-                db=self.mongo_db, 
+                db=self.db, 
                 file_path=file_dict.get('path', ''), 
                 filename=file_dict.get('filename', '')
                 )
