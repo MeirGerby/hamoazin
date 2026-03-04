@@ -1,5 +1,6 @@
-from gridfs import GridFSBucket
 from shared.logs.logs import Logger 
+
+from gridfs import GridFSBucket
 
 logger = Logger.get_logger()
 class MongoLoader:
