@@ -28,6 +28,7 @@ class MongoDB:
         logger.info("get the mongodb client")
         return self._client
         
+        
     async def close(self):
         """close the AsyncMotorClient connection"""
         if self._client:

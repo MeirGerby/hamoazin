@@ -6,7 +6,7 @@ logger = Logger.get_logger()
 class Singleton:
     _instance = None 
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls):
         if not cls._instance:
             cls._instance = super(Singleton, cls).__new__(cls)
             cls._instance.r = sr.Recognizer()  # type: ignore

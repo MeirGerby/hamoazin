@@ -29,7 +29,7 @@ class Manager:
                 file_metadata = self.handle_file.add_metadata()
 
                 file_metadata["path"] = absulut_path 
-                file_metadata['_id'] = str(uuid4())
+                file_metadata['id'] = str(uuid4())
                 file_metadata['filename'] = i
 
                 await self.producer.send_messege(file_metadata)

@@ -1,5 +1,7 @@
 from .transcription import SpeechManager
-from shared.db.mongodb import MongoDB
+from motor.motor_asyncio import AsyncIOMotorClient 
+from .gridfs import MongoDB
+# from shared.kafka.producer import ProducerMessages
 from shared.kafka.consumer import ConsumerMessages 
 from shared.core.config import settings 
 from shared.logs.logs import Logger 
@@ -9,14 +11,17 @@ logger = Logger.get_logger()
 
 class Manager:
     def __init__(self):
-        self.mongo_db_name = settings.MONGO_DB 
-        
+        self.mongo_db_name = settings.MONGO_DB
+        self.mongo_url = settings.MONGODB_URL 
         self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
-        self.metadata_topic = [settings.METADATA_TOPIC]
-        self.group_id = settings.METADATA_GROUP_ID 
+        self.mongo_audio_topic = [settings.MONGO_AUDIO_TOPIC]
+        self.group_id = settings.MONGO_AUDIO_GROUP_ID 
 
+        self.mongo_client: AsyncIOMotorClient = None  # type: ignore
         self.convert_to_text = None
         self.consumer = None 
+        self.speech_manager: SpeechManager = None   # type: ignore
+        self.mongo_do: MongoDB = None    # type: ignore
 
 
     async def setup(self):
@@ -24,10 +29,14 @@ class Manager:
         self.consumer = ConsumerMessages(
             bootstrap_servers=self.bootstrap_servers,
             group_id=self.group_id,
-            topics=self.metadata_topic
+            topics=self.mongo_audio_topic
         )
-        self.mongo_client = MongoDB()
-        self.db = self.mongo_client.get_db(self.mongo_db_name)
+        # self.producer = ProducerMessages(self.bootstrap_servers, self.metadata_topic) 
+        self.mongo_client = AsyncIOMotorClient(self.mongo_url)
+        self.db = self.mongo_client[self.mongo_db_name]
+        self.collection = self.db.get_collection(settings.MONGO_COLLECTION)
+        self.speech_manager = SpeechManager()
+        self.mongo_db = MongoDB(self.db)
 
     async def convert_file_to_text(self, path, speech_manager: SpeechManager):
         try:
@@ -36,11 +45,17 @@ class Manager:
             logger.error(e)
 
     async def manage_file(self, file_dict: dict):
-        speech_manager = SpeechManager()
-
-        id = file_dict.get('id', '')
+        local_path = f"temp/{file_dict.get('filename')}"
         
-        self.convert_to_text = await self.convert_file_to_text(file_path, speech_manager)
+
+        try:
+            filename = file_dict.get('filename')
+            file = await self.collection.find_one({'filename': filename})
+
+            
+            self.convert_to_text = await self.convert_file_to_text(filename, self.speech_manager)
+        except Exception as e:
+            logger.error(e)
 
     async def run(self):
         await self.setup()
@@ -50,3 +65,8 @@ class Manager:
         
     async def main(self):
         await self.run() 
+
+if __name__ == "__main__":
+    import asyncio
+    manager = Manager()
+    asyncio.run(manager.main())
