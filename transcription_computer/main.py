@@ -1,4 +1,5 @@
 import os
+import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient 
 
 from .transcription import SpeechManager
@@ -52,9 +53,10 @@ class Manager:
             filename = file_dict.get('filename')
             local_path = f"temp/{filename}" 
             await self.mongo_db.get_file(local_path, filename) 
-            os.remove(local_path)
             
             self.convert_to_text = await self.convert_file_to_text(local_path, self.speech_manager)
+            os.remove(local_path)
+
         except Exception as e:
             logger.error(e)
 
@@ -68,6 +70,5 @@ class Manager:
         await self.run() 
 
 if __name__ == "__main__":
-    import asyncio
     manager = Manager()
     asyncio.run(manager.main())
