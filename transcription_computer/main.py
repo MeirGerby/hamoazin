@@ -3,7 +3,7 @@ import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient 
 
 from .transcription import SpeechManager
-from .gridfs import MongoDB
+from .gridfs import MongoDBHandler
 # from shared.kafka.producer import ProducerMessages
 from shared.kafka.consumer import ConsumerMessages 
 from shared.core.config import settings 
@@ -14,17 +14,19 @@ logger = Logger.get_logger()
 
 class Manager:
     def __init__(self):
+        # mongo db 
         self.mongo_db_name = settings.MONGO_DB
         self.mongo_url = settings.MONGODB_URL 
+        self.mongo_client: AsyncIOMotorClient = None  # type: ignore
+        self.mongo_do: MongoDBHandler = None    # type: ignore
+        # kafka 
         self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
         self.mongo_audio_topic = [settings.MONGO_AUDIO_TOPIC]
         self.group_id = settings.MONGO_AUDIO_GROUP_ID 
-
-        self.mongo_client: AsyncIOMotorClient = None  # type: ignore
-        self.convert_to_text = None
         self.consumer = None 
+
+        self.convert_to_text = None
         self.speech_manager: SpeechManager = None   # type: ignore
-        self.mongo_do: MongoDB = None    # type: ignore
 
 
     async def setup(self):

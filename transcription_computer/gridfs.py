@@ -5,7 +5,7 @@ from shared.logs.logs import Logger
 
 logger = Logger.get_logger()
 
-class MongoDB:
+class MongoDBHandler:
     def __init__(self, db):
         self.db = db  
         # self.filename = filename 
