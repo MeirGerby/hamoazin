@@ -14,7 +14,7 @@ class ProducerMessages:
         if err is not None:
             logger.error(f"Delivary failed {err}") 
         else:
-            logger.info(f"the msg send successfully {msg.value().decode("utf-8")}")  
+            logger.info(f"the msg send successfully {msg.value().decode('utf-8')}")  
     
     async def send_messege(self, message: dict): 
         """end a messege to kafka """

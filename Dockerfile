@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app 
 
-COPY requirements.txt .
+COPY ./requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt 
 
 FROM base AS metadata-service
@@ -23,5 +23,10 @@ FROM base AS information-processing
 COPY ./shared ./shared/
 COPY information_processing/ ./information_processing
 CMD ["python", "-m", "information_processing.main" ]
+
+FROM base AS transcription
+COPY ./shared ./shared/ 
+COPY transcription_computer/ ./transcription_computer 
+CMD ["python", "-m", "transcription_computer.main"]
 
 

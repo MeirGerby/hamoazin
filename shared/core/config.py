@@ -10,7 +10,8 @@ class Settings(BaseSettings):
     MONGO_AUDIO_GROUP_ID: str = "mongo_audio"
 
     # DATA 
-    DATA_VOLUME: str = "C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts"
+    # DATA_VOLUME: str = "C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts"
+    DATA_VOLUME: str = "/data/podcasts"
 
     # MONGODB 
     MONGODB_URL: str = "mongodb://localhost:27017/" 
@@ -19,7 +20,8 @@ class Settings(BaseSettings):
 
 
     # elasticsearch 
-    ELASTIC_URL: str = "http://localhost:9200" 
+    # ELASTIC_URL: str = "http://localhost:9200" 
+    ELASTIC_URL: str = "http://elasticsearch:9200" 
     ELASTIC_INDEX_NAME: str = 'podcasts' 
     ELASTIC_INDEX_LOGS: str = "index_logs"
     

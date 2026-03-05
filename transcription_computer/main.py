@@ -41,7 +41,7 @@ class Manager:
         self.db = self.mongo_client[self.mongo_db_name]
         self.collection = self.db.get_collection(settings.MONGO_COLLECTION)
         self.speech_manager = SpeechManager()
-        self.mongo_db = MongoDB(self.db)
+        self.mongo_db = MongoDBHandler(self.db)
 
     async def convert_file_to_text(self, path, speech_manager: SpeechManager):
         try:

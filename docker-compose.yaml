@@ -25,8 +25,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
@@ -87,7 +87,21 @@ services:
       - MONGODB_URL=mongodb://mongodb:27017 
       - ELASTIC_URL=http://elasticsearch:9200
     volumes:
-      - C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts:/data/podcasts
+      - C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts:/data/podcasts 
+
+  transcription:
+    build:
+      context: . 
+      dockerfile: Dockerfile 
+      target: transcription 
+    depends_on: [mongodb, kafka, elasticsearch]
+    container_name: transcription 
+    ports:
+      - "8003:8000" 
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092 
+      - MONGODB_URL=mongodb://mongodb:27017 
+      - ELASTIC_URL=http://elasticsearch:9200 
 
 volumes:
   kafka-kraft:

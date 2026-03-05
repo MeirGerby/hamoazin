@@ -39,10 +39,10 @@ class Manager:
         try:
             self.mongo_loader = MongoLoader(
                 db=self.db, 
-                file_path=file_dict.get('path', ''), 
-                filename=file_dict.get('filename', '')
+                file_path=file_dict.get('path'), 
+                filename=file_dict.get('filename')
                 )
-            id = file_dict.get('id', '')
+            id = file_dict.get('id')
 
             await self.mongo_loader.send_file(id)
             await self.producer.send_messege(file_dict)
