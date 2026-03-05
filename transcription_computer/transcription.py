@@ -19,7 +19,7 @@ class SpeechManager(Singleton):
                 audio = self.r.record(source)     # type: ignore
             logger.info(f"convert the audio to text ")
             audio = self.r.recognize_google(audio)     # type: ignore
-            logger.info(f'recognized text: {audio}')
+            logger.info(f'text: {audio}')
             return audio
 
         except Exception as e:
