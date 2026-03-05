@@ -11,16 +11,15 @@ class Singleton:
             cls._instance = super(Singleton, cls).__new__(cls)
             cls._instance.r = sr.Recognizer()  # type: ignore
         return cls._instance 
-    
-
 class SpeechManager(Singleton):
     def recognition_from_file(self, path):
         """convert the audio file to text"""
         try:
             with sr.AudioFile(path) as source:
                 audio = self.r.record(source)     # type: ignore
-            logger.info(f"convert the audio to text {audio}")
+            logger.info(f"convert the audio to text ")
             return self.r.recognize_google(audio)     # type: ignore
+
         except Exception as e:
             logger.error(f"Exception {str(e)}")
             return f"Exception: {str(e)}"
