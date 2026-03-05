@@ -45,15 +45,13 @@ class Manager:
             logger.error(e)
 
     async def manage_file(self, file_dict: dict):
-        local_path = f"temp/{file_dict.get('filename')}"
         
-
         try:
             filename = file_dict.get('filename')
-            file = await self.collection.find_one({'filename': filename})
-
+            local_path = f"temp/{filename}" 
+            await self.mongo_db.get_file(local_path, filename)
             
-            self.convert_to_text = await self.convert_file_to_text(filename, self.speech_manager)
+            self.convert_to_text = await self.convert_file_to_text(local_path, self.speech_manager)
         except Exception as e:
             logger.error(e)
 

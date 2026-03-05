@@ -44,7 +44,7 @@ class Manager:
                 )
             id = file_dict.get('id', '')
 
-            self.mongo_loader.send_file(id)
+            await self.mongo_loader.send_file(id)
             await self.producer.send_messege(file_dict)
 
         except Exception as e:

@@ -19,7 +19,7 @@ class SpeechManager(Singleton):
         try:
             with sr.AudioFile(path) as source:
                 audio = self.r.record(source)     # type: ignore
-            logger.info("convert the audio to text")
+            logger.info(f"convert the audio to text {audio}")
             return self.r.recognize_google(audio)     # type: ignore
         except Exception as e:
             logger.error(f"Exception {str(e)}")
@@ -27,10 +27,7 @@ class SpeechManager(Singleton):
 
 
 
-# speech_manager = SpeechManager()
-# file =  r"C:\Users\MEIRG\Downloads\podcasts_extracted\podcasts\download (2).wav"
-# text = speech_manager.recognition_from_file(file)
-# print(text)
+
 
 
 

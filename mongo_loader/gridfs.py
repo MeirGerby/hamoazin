@@ -1,6 +1,6 @@
 from shared.logs.logs import Logger 
 
-from gridfs import GridFSBucket
+from motor.motor_asyncio import AsyncIOMotorGridFSBucket
 
 logger = Logger.get_logger()
 class MongoLoader:
@@ -9,12 +9,12 @@ class MongoLoader:
         self.file_path = file_path
         self.filename = filename 
 
-    def send_file(self, file_id):
+    async def send_file(self, file_id):
         """send file to mongodb by id"""
-        bucket = GridFSBucket(self.db)
+        bucket = AsyncIOMotorGridFSBucket(self.db)
         try:
             with open(self.file_path, 'rb') as file_data:
-                bucket.upload_from_stream_with_id(
+                await bucket.upload_from_stream_with_id(
                     file_id=file_id,
                     filename=self.filename, 
                     source=file_data
