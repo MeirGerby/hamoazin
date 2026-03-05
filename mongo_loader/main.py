@@ -1,10 +1,13 @@
 import asyncio
-from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 
+from shared.kafka.producer import ProducerMessages
 from shared.kafka.consumer import ConsumerMessages 
 from shared.core.config import settings 
+from shared.logs.logs import Logger 
 from .gridfs import MongoLoader 
 
+logger = Logger.get_logger()
 class Manager:
     def __init__(self):
         self.mongo_url = settings.MONGODB_URL 
@@ -13,6 +16,9 @@ class Manager:
         self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
         self.metadata_topic = [settings.METADATA_TOPIC]
         self.group_id = settings.METADATA_GROUP_ID 
+
+        # kafka producer
+        self.mongo_audio_topic = settings.MONGO_AUDIO_TOPIC
 
         self.mongo_loader = None
         self.consumer = None 
@@ -25,28 +31,29 @@ class Manager:
             group_id=self.group_id,
             topics=self.metadata_topic
         )
-        self.mongo_client = MongoClient(self.mongo_url)
+        self.producer = ProducerMessages(self.bootstrap_servers, self.mongo_audio_topic)
+        self.mongo_client = AsyncIOMotorClient(self.mongo_url)
         self.db = self.mongo_client[self.mongo_db_name]
 
     async def manage_file(self, file_dict: dict):
         try:
-            print(file_dict)
             self.mongo_loader = MongoLoader(
                 db=self.db, 
-                file_path=file_dict.get('path', ''), 
-                filename=file_dict.get('filename', '')
+                file_path=file_dict.get('path'), 
+                filename=file_dict.get('filename')
                 )
-            id = file_dict.get('id', '')
+            id = file_dict.get('id')
 
-            self.mongo_loader.send_file(id)
+            await self.mongo_loader.send_file(id)
+            await self.producer.send_messege(file_dict)
 
         except Exception as e:
-            print(e)
+            logger.error(e)
 
 
     async def run(self):
         await self.setup()
-        print("the program set up seccessfully")
+        logger.info("the program set up seccessfully")
 
         await self.consumer.consumer_loop(self.manage_file)  # type: ignore
         

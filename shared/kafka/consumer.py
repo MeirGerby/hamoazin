@@ -1,8 +1,9 @@
 from confluent_kafka import Consumer 
 import json
-from logs.logs import Logger 
 
-logger = Logger.get_logger(__name__)
+from shared.logs.logs import Logger 
+
+logger = Logger.get_logger()
 
 class ConsumerMessages:
     def __init__(self, bootstrap_servers: str, topics: list, group_id: str):
@@ -17,29 +18,29 @@ class ConsumerMessages:
     async def consumer_loop(self, callback):
         """listening to kafka by topics"""
         self.consumer.subscribe(self.topics)
-        print(f"Consumer started. Listening to topics: {self.topics}...")
+        logger.info(f"Consumer started. Listening to topics: {self.topics}...")
         try:
             while True:
                 msg = self.consumer.poll(1.0) 
                 if msg is None: continue 
                 if msg.error():
                     # logging.error(f"Consumer error {msg.error}") 
-                    print(f"Consumer error {msg.error}") 
+                    logger.error(f"Consumer error {msg.error}") 
                     continue 
                 try:
                     row_data = msg.value().decode('utf-8')  # type: ignore 
-                    data = json.loads(row_data)  
-                    print(f"Message received from topic {msg.topic()}: {data.get('filename', 'unknown file')}")
+                    data: dict = json.loads(row_data)  
+                    logger.info(f"Message received from topic {msg.topic()}: {data.get('filename', 'unknown file')}")
 
                     await callback(data)
                 
                 except json.JSONDecodeError:
-                    print(f"faild to decode the message")
+                    logger.error(f"faild to decode the message")
                 except Exception as e:
-                    print(e)
+                    logger.exception(e)
         except KeyboardInterrupt:
-            print('the consumer stoped by the user')
+            logger.warning('the consumer stoped by the user')
 
         finally:
-            print("close the connection")
+            logger.info("close the connection")
             self.consumer.close()

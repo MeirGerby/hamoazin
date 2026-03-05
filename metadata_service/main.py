@@ -5,6 +5,9 @@ from uuid import uuid4
 from shared.core.config import settings
 from shared.kafka.producer import ProducerMessages  
 from .handle_file import FileMetadata 
+from shared.logs.logs import Logger 
+
+logger = Logger.get_logger()
 class Manager:
     def __init__(self):
         self.folder = settings.DATA_VOLUME 
@@ -30,7 +33,6 @@ class Manager:
                 file_metadata['filename'] = i
 
                 await self.producer.send_messege(file_metadata)
-                print(f"the message send successfully,\n file's metadata: {file_metadata} \n topic: {self.metadata_topic}")
 
         except FileNotFoundError as f:
             print(f)
