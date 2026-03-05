@@ -50,6 +50,9 @@ class Manager:
         except Exception as e:
             logger.error(e)
 
+        finally:
+            self.producer.close()
+
 
     async def run(self):
         await self.setup()
