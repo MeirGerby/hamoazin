@@ -1,7 +1,9 @@
 from elasticsearch import AsyncElasticsearch 
 
 from shared.core.config import settings 
+from shared.logs.logs import Logger 
 
+logger = Logger.get_logger()
 class ElasticSingleton:
     _instance = None 
     _client: AsyncElasticsearch = None  # type: ignore
@@ -18,9 +20,11 @@ class ElasticSingleton:
     @property 
     def client(self) -> AsyncElasticsearch:
         """get the AsyncElasticsearch client"""
+        logger.info('get the elastic client')
         return self._client 
     
     async def close(self): 
         """close the elastic connection"""
         if self._client:
             await self._client.close()
+            logger.info("close the elastic connection")

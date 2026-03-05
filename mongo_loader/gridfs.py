@@ -22,3 +22,5 @@ class MongoLoader:
             logger.info(f"file uploaded with fild_id {file_id}")
         except Exception as e:
             logger.error(e)
+
+            

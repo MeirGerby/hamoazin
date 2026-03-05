@@ -1,9 +1,17 @@
 import speech_recognition as sr
 
 from shared.logs.logs import Logger 
-from .recognition_singleton import Singleton  
 
 logger = Logger.get_logger()
+class Singleton:
+    _instance = None 
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(Singleton, cls).__new__(cls)
+            cls._instance.r = sr.Recognizer()  # type: ignore
+        return cls._instance 
+    
 
 class SpeechManager(Singleton):
     def recognition_from_file(self, path):
