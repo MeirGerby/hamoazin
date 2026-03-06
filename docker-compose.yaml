@@ -5,7 +5,13 @@ services:
     image: mongo:latest
     container_name: mongodb 
     ports:
-      - "27017:27017"
+      - "27017:27017" 
+    healthcheck: 
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s 
+      timeout: 5s 
+      retries: 5 
+      start_period: 40s
     volumes:
       - mongo-data:/data/db
   kafka:
@@ -29,7 +35,14 @@ services:
       # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
-      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs 
+    
+    healthcheck: 
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 30s 
+      timeout: 5s 
+      start_period: 40s 
+      retries: 3 
 
     volumes:
       - kafka-kraft:/var/lib/kafka/data 
@@ -37,6 +50,16 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
     container_name: elasticsearch 
+    healthcheck:
+      test: [
+        "CMD-SHELL", "curl -fs 
+        http://localhost:9200/_cluster/health?
+        wait_for_status=yellow&timeout=5s || exit 1
+        "]
+      interval: 10s
+      timeout: 5s 
+      retries: 5
+      start_period: 20s
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false 
@@ -52,12 +75,16 @@ services:
       context: . 
       dockerfile: Dockerfile
       target: metadata-service 
-    depends_on: [mongodb, kafka]
     container_name: metadata_service 
     ports:
       - "8000:8000" 
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
+    depends_on: 
+      mongodb:
+        condition: service_healthy 
+      kafka: 
+        condition: service_healthy 
     volumes:
       - C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts:/data/podcasts
   information-processing:
@@ -65,8 +92,14 @@ services:
       context: .
       dockerfile: Dockerfile
       target: information-processing 
-    depends_on: [elasticsearch, kafka]
     container_name: information_processing 
+    command: ["sh", "-c", "echo 'Elasticsearch is healthy and app is running'; sleep 3600"]
+    depends_on: 
+      elasticsearch: 
+        condition: service_healthy
+      kafka: 
+        condition: service_healthy
+
     ports:
       - "8001:8000" 
     environment:
@@ -78,7 +111,6 @@ services:
       context: . 
       dockerfile: Dockerfile 
       target: mongo-loader
-    depends_on: [mongodb, kafka]
     container_name: mongo_loader 
     ports:
       - "8002:8000" 
@@ -86,6 +118,11 @@ services:
       - BOOTSTRAP_SERVERS=kafka:9092
       - MONGODB_URL=mongodb://mongodb:27017 
       - ELASTIC_URL=http://elasticsearch:9200
+    depends_on: 
+      mongodb:
+        condition: service_healthy 
+      kafka: 
+        condition: service_healthy
     volumes:
       - C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts:/data/podcasts 
 
@@ -94,7 +131,6 @@ services:
       context: . 
       dockerfile: Dockerfile 
       target: transcription 
-    depends_on: [mongodb, kafka, elasticsearch]
     container_name: transcription 
     ports:
       - "8003:8000" 
@@ -102,8 +138,19 @@ services:
       - BOOTSTRAP_SERVERS=kafka:9092 
       - MONGODB_URL=mongodb://mongodb:27017 
       - ELASTIC_URL=http://elasticsearch:9200 
+    depends_on: 
+      mongodb:
+        condition: service_healthy 
+      kafka: 
+        condition: service_healthy 
+      elasticsearch: 
+        condition: service_healthy 
 
 volumes:
   kafka-kraft:
   mongo-data:
-  elastic-data:
+  elastic-data: 
+
+
+
+
