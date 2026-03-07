@@ -3,7 +3,7 @@ import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient 
 
 from .transcription import SpeechManager
-from .gridfs import MongoDBHandler
+from .mongo.gridfs import MongoDBHandler
 # from shared.kafka.producer import ProducerMessages
 from shared.kafka.consumer import ConsumerMessages 
 from shared.core.config import settings 
