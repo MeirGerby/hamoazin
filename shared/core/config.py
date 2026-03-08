@@ -20,8 +20,8 @@ class Settings(BaseSettings):
 
 
     # elasticsearch 
-    # ELASTIC_URL: str = "http://localhost:9200" 
-    ELASTIC_URL: str = "http://elasticsearch:9200" 
+    ELASTIC_URL: str = "http://localhost:9200" 
+    # ELASTIC_URL: str = "http://elasticsearch:9200" 
     ELASTIC_INDEX_NAME: str = 'podcasts' 
     ELASTIC_INDEX_LOGS: str = "index_logs"
     
