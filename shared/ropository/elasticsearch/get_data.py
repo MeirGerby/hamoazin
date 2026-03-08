@@ -30,6 +30,3 @@ class ElasticSearchGetData(ElasticSingleton):
         )
         return text 
     
-    async def insert_data_to_index(self, data):
-        """insert data to elasticsearch index"""
-        return await self.client.index(index=settings.ELASTIC_INDEX_NAME, document=data) 
