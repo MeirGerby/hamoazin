@@ -35,3 +35,5 @@ class ElasticSearchGetData(ElasticSingleton):
         logger.info(f"get all audio text from index {self.index_name}, text: {text}")
         return text 
     
+
+    

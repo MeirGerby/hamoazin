@@ -4,7 +4,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from .transcription import SpeechManager
 from .mongo.gridfs import MongoDBHandler
-# from shared.kafka.producer import ProducerMessages
+from shared.kafka.producer import ProducerMessages
 from shared.kafka.consumer import ConsumerMessages 
 from shared.core.config import settings 
 from shared.logs.logs import Logger 
@@ -22,7 +22,7 @@ class Manager:
         self.mongo_do: MongoDBHandler = None    # type: ignore
         # kafka 
         self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
-        self.mongo_audio_topic = [settings.MONGO_AUDIO_TOPIC]
+        self.mongo_audio_topic = settings.MONGO_AUDIO_TOPIC
         self.group_id = settings.MONGO_AUDIO_GROUP_ID 
         self.consumer = None 
 
@@ -35,9 +35,9 @@ class Manager:
         self.consumer = ConsumerMessages(
             bootstrap_servers=self.bootstrap_servers,
             group_id=self.group_id,
-            topics=self.mongo_audio_topic
+            topics=[self.mongo_audio_topic]
         )
-        # self.producer = ProducerMessages(self.bootstrap_servers, self.metadata_topic) 
+        self.producer = ProducerMessages(topic=self.mongo_audio_topic) 
         self.mongo_client = AsyncIOMotorClient(self.mongo_url)
         self.db = self.mongo_client[self.mongo_db_name]
         self.collection = self.db.get_collection(settings.MONGO_COLLECTION)
@@ -60,6 +60,7 @@ class Manager:
             
             convert_to_text = await self.convert_file_to_text(local_path, self.speech_manager)
             await self.es.insert_text_to_index(convert_to_text)
+            self.producer.producer
             os.remove(local_path)
 
         except Exception as e:

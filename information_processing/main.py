@@ -1,7 +1,6 @@
 import asyncio
 
 from shared.kafka.consumer import ConsumerMessages 
-# from shared.kafka.producer import ProducerMessages
 from shared.core.config import settings 
 from shared.logs.logs import Logger 
 from shared.repository.elasticsearch.insert_data import ElasticSearchInsertData
@@ -10,14 +9,10 @@ from shared.repository.elasticsearch.insert_data import ElasticSearchInsertData
 logger = Logger.get_logger()
 class Manager:
     def __init__(self):
-        # kafka consumer
         self.consumer_topics = [settings.METADATA_TOPIC]    
         self.group_id = settings.PROCESSING_GROUP_ID 
-
-        # elastic 
         self.index_name = settings.ELASTIC_INDEX_NAME 
         self.elastic_url = settings.ELASTIC_URL
-
         self.consumer: ConsumerMessages = None   # type: ignore
         self.elastic: ElasticSearchInsertData = None  # type: ignore 
        

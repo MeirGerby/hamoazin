@@ -4,13 +4,13 @@ from shared.core.config import settings
 from shared.logs.logs import Logger 
 
 logger = Logger.get_logger()
-class MongoDB:
+class MongoDBSingleton:
     _instance = None 
     _client: AsyncIOMotorClient  = None   # type: ignore
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
-            cls._instance = super(MongoDB, cls).__new__(cls)
+            cls._instance = super(MongoDBSingleton, cls).__new__(cls)
 
             mongodb_url = settings.MONGODB_URL
             cls._instance._client = AsyncIOMotorClient(mongodb_url)
