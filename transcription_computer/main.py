@@ -8,7 +8,7 @@ from .mongo.gridfs import MongoDBHandler
 from shared.kafka.consumer import ConsumerMessages 
 from shared.core.config import settings 
 from shared.logs.logs import Logger 
-from shared.db.elasticsearch import ElasticSearchCrud
+from shared.repository.elasticsearch.insert_data import ElasticSearchInsertData
 
 
 logger = Logger.get_logger()
@@ -26,7 +26,7 @@ class Manager:
         self.group_id = settings.MONGO_AUDIO_GROUP_ID 
         self.consumer = None 
 
-        self.es = ElasticSearchCrud()
+        self.es = ElasticSearchInsertData()
         self.speech_manager: SpeechManager = None   # type: ignore
 
 
@@ -59,7 +59,7 @@ class Manager:
             await self.mongo_db.get_file(local_path, filename) 
             
             convert_to_text = await self.convert_file_to_text(local_path, self.speech_manager)
-            await self.es.insert_data_to_index(convert_to_text)
+            await self.es.insert_text_to_index(convert_to_text)
             os.remove(local_path)
 
         except Exception as e:
