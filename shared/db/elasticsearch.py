@@ -11,9 +11,11 @@ class ElasticSingleton:
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             cls._instance = super(ElasticSingleton, cls).__new__(cls)
-
+            
             cls._instance._client = AsyncElasticsearch(
-                hosts=settings.ELASTIC_URL
+                hosts=[settings.ELASTIC_URL],
+                retry_on_timeout=True,
+                max_retries=3
             )
         return cls._instance 
     
@@ -27,4 +29,8 @@ class ElasticSingleton:
         """close the elastic connection"""
         if self._client:
             await self._client.close()
+            self._instance = None
             logger.info("close the elastic connection")
+
+
+

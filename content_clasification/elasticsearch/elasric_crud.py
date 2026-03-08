@@ -1,11 +1,14 @@
 from elasticsearch import Elasticsearch 
-from shared.core.config import settings 
+from shared.logs.logs import Logger 
+
+logger = Logger.get_logger()
 
 
 class ElasticSearchCrud:
-    def __init__(self):
-        self.es = Elasticsearch(hosts=[settings.ELASTIC_URL]) 
-        self.index_name = settings.ELASTIC_INDEX_NAME
+    def __init__(self, index_name, hosts):
+        self.es = Elasticsearch(hosts=[hosts], verify_certs=False) 
+        self.index_name = index_name 
+
 
     def get_all_data(self):
         """get all documents from the index"""
@@ -27,6 +30,9 @@ class ElasticSearchCrud:
             }
         )
         return text 
+    
+    
+    
     
 
 

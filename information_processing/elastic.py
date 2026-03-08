@@ -15,6 +15,7 @@ class ElasticSearch:
             logger.info(f"the index added successfully {str(index)} ")
             # return {"index": str(index)}
         except Exception as e:
-            logger.error(f"the id doesn't exist {e}")
+            logger.error(f"the id doesn't exist {e}") 
+
         
 

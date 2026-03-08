@@ -8,6 +8,7 @@ from .mongo.gridfs import MongoDBHandler
 from shared.kafka.consumer import ConsumerMessages 
 from shared.core.config import settings 
 from shared.logs.logs import Logger 
+from shared.db.elasticsearch import ElasticSearchCrud
 
 
 logger = Logger.get_logger()
@@ -25,7 +26,7 @@ class Manager:
         self.group_id = settings.MONGO_AUDIO_GROUP_ID 
         self.consumer = None 
 
-        self.convert_to_text = None
+        self.es = ElasticSearchCrud()
         self.speech_manager: SpeechManager = None   # type: ignore
 
 
@@ -44,19 +45,21 @@ class Manager:
         self.mongo_db = MongoDBHandler(self.db)
 
     async def convert_file_to_text(self, path, speech_manager: SpeechManager):
+        """convert audio file to text"""
         try:
             return speech_manager.recognition_from_file(path)
         except Exception as e:
             logger.error(e)
 
     async def manage_file(self, file_dict: dict):
-        
+        """manage the order of execution"""
         try:
             filename = file_dict.get('filename')
             local_path = f"temp/{filename}" 
             await self.mongo_db.get_file(local_path, filename) 
             
-            self.convert_to_text = await self.convert_file_to_text(local_path, self.speech_manager)
+            convert_to_text = await self.convert_file_to_text(local_path, self.speech_manager)
+            await self.es.insert_data_to_index(convert_to_text)
             os.remove(local_path)
 
         except Exception as e:

@@ -31,8 +31,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs 
@@ -88,6 +88,7 @@ services:
       - "8000:8000" 
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
+      - DATA_VOLUME=/data/podcasts
     depends_on: 
       mongodb:
         condition: service_healthy 
@@ -126,6 +127,7 @@ services:
       - BOOTSTRAP_SERVERS=kafka:9092
       - MONGODB_URL=mongodb://mongodb:27017 
       - ELASTIC_URL=http://elasticsearch:9200
+      
     depends_on: 
       mongodb:
         condition: service_healthy 

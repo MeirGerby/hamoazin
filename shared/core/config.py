@@ -10,11 +10,12 @@ class Settings(BaseSettings):
     MONGO_AUDIO_GROUP_ID: str = "mongo_audio"
 
     # DATA 
-    # DATA_VOLUME: str = "C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts"
-    DATA_VOLUME: str = "/data/podcasts"
+    DATA_VOLUME: str = "C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts"
+    # DATA_VOLUME: str = "/data/podcasts"
 
     # MONGODB 
     MONGODB_URL: str = "mongodb://localhost:27017/" 
+    # MONGODB_URL: str = "mongodb://mongodb:27017/" 
     MONGO_DB: str = 'podcasts_db'
     MONGO_COLLECTION: str = "podcasts" 
 
