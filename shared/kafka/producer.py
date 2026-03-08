@@ -1,11 +1,12 @@
 from confluent_kafka import Producer 
 import json 
 from shared.logs.logs import Logger 
+from shared.core.config import settings
 
 logger = Logger.get_logger()
 class ProducerMessages:
-    def __init__(self, bootstrap_servers: str, topic: str):
-        self.conf = {"bootstrap.servers": bootstrap_servers}
+    def __init__(self, topic: str, bootstrap_servers: str=None):  # type: ignore
+        self.conf = {"bootstrap.servers": bootstrap_servers or settings.BOOTSTRAP_SERVERS}
         self.producer = Producer(self.conf)  # type: ignore
         self.topic = topic 
 
@@ -20,7 +21,6 @@ class ProducerMessages:
         """end a messege to kafka """
         try:
             logger.info(f"send message to {self.topic}")  
-
             self.producer.produce(
                 topic=self.topic,
                 value=json.dumps(message).encode('utf-8'),
@@ -31,7 +31,6 @@ class ProducerMessages:
                 f"the message send successfully,\n"
                 f"file's metadata: {message} \n topic: {self.topic}"
                 )
-
         except Exception as e:
             logger.exception(e)
     

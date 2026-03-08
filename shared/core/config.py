@@ -7,7 +7,9 @@ class Settings(BaseSettings):
     METADATA_GROUP_ID: str = "metadata_consumer_group"
     PROCESSING_GROUP_ID: str = "infomation_processing"
     MONGO_AUDIO_TOPIC: str = "mongo_audio"
-    MONGO_AUDIO_GROUP_ID: str = "mongo_audio"
+    MONGO_AUDIO_GROUP_ID: str = "mongo_audio" 
+    ROW_TEXT_TOPIC: str = "row_text"
+    ROW_TEXT_GROUP_ID: str = "row_text"
 
     # DATA 
     DATA_VOLUME: str = "C:/Users/MEIRG/Downloads/podcasts_extracted/podcasts"

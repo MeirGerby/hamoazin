@@ -1,13 +1,14 @@
 from confluent_kafka import Consumer 
 import json
 from shared.logs.logs import Logger 
+from shared.core.config import settings
 
 logger = Logger.get_logger()
 
 class ConsumerMessages:
-    def __init__(self, bootstrap_servers: str, topics: list, group_id: str):
+    def __init__(self, topics: list, group_id: str, bootstrap_servers:str=None):  # type: ignore
         self.conf = {
-            "bootstrap.servers": bootstrap_servers,
+            "bootstrap.servers": bootstrap_servers or settings.BOOTSTRAP_SERVERS,
             "group.id": group_id,
             "auto.offset.reset": "earliest"
             }
