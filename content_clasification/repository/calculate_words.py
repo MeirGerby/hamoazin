@@ -47,10 +47,10 @@ class ElasticSearchCalculateWords(ElasticSingleton):
             logger.info(f"search in index - {self.index_name} \n  response: {response}")
 
             for hit in response:  
-                logger.info(f"Score: {hit['_score']}, text: {hit['_source']['text']}")
+                logger.info(f"Score: {hit['_score']}, text: {hit['_source']['text']}") 
+
         except Exception as e:
             logger.exception(e)
-
 
 
 
