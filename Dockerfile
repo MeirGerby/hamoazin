@@ -7,6 +7,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app 
 
 COPY ./requirements.txt .
+
+RUN python -m pip install --upgrade pip 
 RUN pip install --no-cache-dir -r requirements.txt 
 
 FROM base AS metadata-service
@@ -29,4 +31,8 @@ COPY ./shared ./shared/
 COPY transcription_computer/ ./transcription_computer 
 CMD ["python", "-m", "transcription_computer.main"]
 
+FROM base AS content-clasification 
+COPY ./shared ./shared/ 
+COPY content_clasification ./content_clasification 
+CMD ["python", "-m", "content_clasification.main"]
 
