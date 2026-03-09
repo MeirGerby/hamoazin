@@ -29,7 +29,7 @@ class ConsumerMessages:
                 try:
                     row_data = msg.value().decode('utf-8')  # type: ignore 
                     data: dict = json.loads(row_data)  
-                    logger.info(f"Message received from topic {msg.topic()}: {data.get('filename', 'unknown file')}")
+                    logger.info(f"Message received from topic {msg.topic()}, data {data}")
 
                     await callback(data)
                 

@@ -27,7 +27,7 @@ class Manager:
             group_id=self.group_id,
             topics=self.metadata_topic
         )
-        self.producer = ProducerMessages(self.mongo_audio_topic)
+        self.producer = ProducerMessages(topic=self.mongo_audio_topic)
         self.mongo_client = AsyncIOMotorClient(self.mongo_url)
         self.db = self.mongo_client[self.mongo_db_name]
 

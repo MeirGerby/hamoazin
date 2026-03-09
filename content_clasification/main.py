@@ -23,24 +23,20 @@ class Manager:
         """
         try:
             decoder = Decoder()
-            logger.debug("create an instance of Decoder class")
-
             self.handle_text = HandleText(decoder)
-            logger.debug("create an instance of HandleText class")
-
-            self.elastic = ElasticSearchCalculateWords(self.handle_text) 
-            logger.debug("create an instance of ElasticSearchCalculateWords class")
+            elastic = ElasticSearchCalculateWords(self.handle_text) 
 
             logger.info("the program set up successfully!")
+            return elastic
         except Exception as e:
-            logger.exception(f"there's a problam while the program sets up {e}")
+            logger.exception(f"there's a problam while the program sets up, {e}")
 
     async def manager(self, data: dict):
         """
         this func contains all the functionality of this service.
         """
         try:
-            
+
             words: dict = self.handle_text.get_words()
             lst = []
             for k,v in words.items():
@@ -48,7 +44,7 @@ class Manager:
                     query = self.elastic.create_word_query(v, boost=2, coupled=True)
                     lst.extend(query)  # type: ignore
                     logger.debug(f"create coupled text query. query {v}")
-                else:
+                elif k == "danger_words" or k == "less_danger_words":
                     query = self.elastic.create_word_query(v)
                     lst.extend(query)    # type: ignore
                     logger.debug(f"create single word query. query: {v}") 

@@ -74,7 +74,10 @@ class Manager:
         await self.consumer.consumer_loop(self.manage_file)  # type: ignore
         
     async def main(self):
-        await self.run() 
+        try:
+            await self.run() 
+        finally:
+            await self.es.close()
 
 if __name__ == "__main__":
     manager = Manager()

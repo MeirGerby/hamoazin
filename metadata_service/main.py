@@ -12,13 +12,12 @@ class Manager:
     def __init__(self):
         self.folder = settings.DATA_VOLUME 
         self.metadata_topic = settings.METADATA_TOPIC
-        self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
         self.producer: ProducerMessages = None  # type: ignore
         self.handle_file: FileMetadata = None  # type: ignore
 
     def setup(self):
         """create the producer instance"""
-        self.producer = ProducerMessages(self.bootstrap_servers, self.metadata_topic) 
+        self.producer = ProducerMessages(self.metadata_topic) 
 
     async def run(self):
         try:

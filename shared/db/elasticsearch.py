@@ -17,12 +17,12 @@ class ElasticSingleton:
                 retry_on_timeout=True,
                 max_retries=3
             )
+            logger.info('get the elastic client')
         return cls._instance 
     
     @property 
     def client(self) -> AsyncElasticsearch:
         """get the AsyncElasticsearch client"""
-        logger.info('get the elastic client')
         return self._client 
     
     async def close(self): 

@@ -21,8 +21,8 @@ class ElasticSearchCalculateWords(ElasticSingleton):
 
     def create_word_query(self, list_of_words: list, boost: int = 1, coupled: bool = False): 
         """create elasticsearch query for list of words""" 
+        queries = [] 
         try:
-            queries = [] 
             for i in list_of_words:
                 if coupled:
                     query = {"match_phrase": {'text': {'query': i, 'boost': boost}}}
@@ -30,9 +30,9 @@ class ElasticSearchCalculateWords(ElasticSingleton):
                     query = {"match": {'text': {'query': i, 'boost': boost}}}
                 queries.append(query)
                 logger.info(f"create a query from the text: {i}. \n   query: {query}.")
-            return queries
         except Exception as e:
             logger.exception(f"there is an error {e}. \n mayby you shuold check the type of the paramter")
+        return queries
 
     async def calculate_words(self, queries: list): 
         """calculate the words include ranking from elasticsearch"""
