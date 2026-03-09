@@ -24,8 +24,7 @@ class ConsumerMessages:
                 msg = self.consumer.poll(1.0) 
                 if msg is None: continue 
                 if msg.error():
-                    # logging.error(f"Consumer error {msg.error}") 
-                    logger.error(f"Consumer error {msg.error}") 
+                    logger.error(f"Consumer error {msg.error()}") 
                     continue 
                 try:
                     row_data = msg.value().decode('utf-8')  # type: ignore 

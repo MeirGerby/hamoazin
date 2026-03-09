@@ -42,15 +42,3 @@ class HandleText:
         logger.info("create a dict contains all the list of words.")
         return self.all_text
         
-def create_word_query(list_of_words: list, boost=1): 
-    """create elasticsearch query for list of words""" 
-    queries = [] 
-    for i in list_of_words:
-        query = {"match": {'text': i, 'boost': boost}}
-        queries.append(query)
-        logger.info(f"create a query from the text: {i}. \n   query: {query}.")
-    return queries
-
-handle = HandleText(Decoder())
-words = handle.get_words()
-create_word_query(words['danger_coupled_words'])

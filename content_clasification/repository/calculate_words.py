@@ -1,11 +1,11 @@
 from shared.db.elasticsearch import ElasticSingleton 
 from shared.core.config import settings
 from shared.logs.logs import Logger 
-from service.handle_text import HandleText
+from ..service.handle_text import HandleText
 
 logger = Logger.get_logger()
 
-class ElasticSearchColculateWords(ElasticSingleton):
+class ElasticSearchCalculateWords(ElasticSingleton):
     """elasticsearch crud operation (singleton)"""
     def __init__(self, handle_text: HandleText):
         self.check_text: dict = handle_text.get_words()
@@ -19,17 +19,23 @@ class ElasticSearchColculateWords(ElasticSingleton):
             self.index_name = settings.ELASTIC_INDEX_NAME
             self.initiolized = True 
 
-    def create_word_query(self, list_of_words: list, boost=1): 
+    def create_word_query(self, list_of_words: list, boost: int = 1, coupled: bool = False): 
         """create elasticsearch query for list of words""" 
-        queries = [] 
-        for i in list_of_words:
-            query = {"match": {'text': i, 'boost': boost}}
-            queries.append(query)
-            logger.info(f"create a query from the text: {i}. \n   query: {query}.")
-        return queries
-        
+        try:
+            queries = [] 
+            for i in list_of_words:
+                if coupled:
+                    query = {"match_phrase": {'text': {'query': i, 'boost': boost}}}
+                else:
+                    query = {"match": {'text': {'query': i, 'boost': boost}}}
+                queries.append(query)
+                logger.info(f"create a query from the text: {i}. \n   query: {query}.")
+            return queries
+        except Exception as e:
+            logger.exception(f"there is an error {e}. \n mayby you shuold check the type of the paramter")
 
-    async def colculate_words(self, queries: list): 
+    async def calculate_words(self, queries: list): 
+        """calculate the words include ranking from elasticsearch"""
         try:
             query = {'bool':{'should':queries}}
             logger.debug(f'create a query for searching in elasticsearch \n  query: {queries}')
@@ -41,9 +47,7 @@ class ElasticSearchColculateWords(ElasticSingleton):
             logger.info(f"search in index - {self.index_name} \n  response: {response}")
 
             for hit in response:  
-                score = hit.get('_score', 0)
-                text = hit.get('_source', {}).get('text', 'not text found')
-                logger.info(f"Score: {hit[score]}, text: {hit['_source'][text]}")
+                logger.info(f"Score: {hit['_score']}, text: {hit['_source']['text']}")
         except Exception as e:
             logger.exception(e)
 

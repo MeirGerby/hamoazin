@@ -23,6 +23,7 @@ class Manager:
         # kafka 
         self.bootstrap_servers = settings.BOOTSTRAP_SERVERS
         self.mongo_audio_topic = settings.MONGO_AUDIO_TOPIC
+        self.row_text = settings.ROW_TEXT_TOPIC
         self.group_id = settings.MONGO_AUDIO_GROUP_ID 
         self.consumer = None 
 
@@ -37,7 +38,7 @@ class Manager:
             group_id=self.group_id,
             topics=[self.mongo_audio_topic]
         )
-        self.producer = ProducerMessages(topic=self.mongo_audio_topic) 
+        self.producer = ProducerMessages(topic=self.row_text) 
         self.mongo_client = AsyncIOMotorClient(self.mongo_url)
         self.db = self.mongo_client[self.mongo_db_name]
         self.collection = self.db.get_collection(settings.MONGO_COLLECTION)
@@ -60,7 +61,7 @@ class Manager:
             
             convert_to_text = await self.convert_file_to_text(local_path, self.speech_manager)
             await self.es.insert_text_to_index(convert_to_text)
-            self.producer.producer
+            await self.producer.send_messege(convert_to_text)  # type: ignore
             os.remove(local_path)
 
         except Exception as e:
